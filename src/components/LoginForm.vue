@@ -21,6 +21,7 @@ import { validationMixin } from 'vuelidate'
 import LoginValidation from 'src/validations/LoginValidation'
 import LoginStore from 'src/store/LoginStore'
 import { User } from 'src/models/auth'
+import { AxiosResponse } from 'axios'
 
 @Component({
   mixins: [validationMixin],
@@ -45,16 +46,21 @@ export default class LoginForm extends Mixins(LoginStore) {
 
       switch (result.status) {
         case 200:
+          switch ((result.data as unknown as User).roleDescription) {
+            case 'ADMIN':
+              this.setLocalStorageAndStoreUser(result)
+              await this.$router.push({ name: 'administration' })
+              break
 
-          this.$q.localStorage.set('isLogged', true)
-          this.$q.localStorage.set('user', result.data)
+            case 'USER':
+              this.setLocalStorageAndStoreUser(result)
+              await this.$router.push({ name: 'main' })
+              break
 
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-call
-          this.setLoginned(true)
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-call
-          this.setResponseUser(result.data as unknown as User)
-          await this.$router.push({ name: 'main' })
-          break
+            default:
+              await this.$router.push({ name: 'login' })
+              break
+          }
       }
     } else {
       this.$q.notify({
@@ -65,6 +71,16 @@ export default class LoginForm extends Mixins(LoginStore) {
         position: 'bottom'
       })
     }
+  }
+
+  private setLocalStorageAndStoreUser (result: AxiosResponse<AuthResponse>): void {
+    this.$q.localStorage.set('isLogged', true)
+    this.$q.localStorage.set('user', result.data)
+
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-call
+    this.setLoginned(true)
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-call
+    this.setResponseUser(result.data as unknown as User)
   }
 }
 </script>

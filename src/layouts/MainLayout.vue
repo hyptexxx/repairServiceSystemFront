@@ -5,6 +5,8 @@
         q-toolbar-title
           q-avatar
           |           Сервис ремонта и технического обслуживания
+        div.row.q-ml-auto
+          q-btn(outline label="Выход" @click="logoutEvent")
     q-page-container
       .row.items-start.q-gutter-md
         q-card.col(flat='' bordered='')
@@ -52,9 +54,10 @@ import { Component, Mixins } from 'vue-property-decorator'
 import LoginStore from 'src/store/LoginStore'
 import { User } from 'src/models/auth'
 import { RepairRequest } from 'src/models/models'
+import APIRequests from 'src/requests/APIRequests'
 
 @Component
-export default class MainLayout extends Mixins(LoginStore) {
+export default class MainLayout extends Mixins(LoginStore, APIRequests) {
   private requestDescription = ''
 
   private repairRequestModel!: RepairRequest
@@ -63,6 +66,10 @@ export default class MainLayout extends Mixins(LoginStore) {
     login: 'test',
     roleDescription: 'hr',
     id: 12345
+  }
+
+  private async logoutEvent (): Promise<void> {
+    await this.logout()
   }
 
   private mounted (): void {

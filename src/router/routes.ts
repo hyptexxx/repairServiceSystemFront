@@ -3,19 +3,27 @@ import AuthService from 'src/service/AuthService'
 import LoginLayout from 'layouts/LoginLayout.vue'
 import Login from 'pages/Login.vue'
 import MainLayout from 'layouts/MainLayout.vue'
+import AdminLayout from 'layouts/AdminLayout.vue'
 
 const authService = new AuthService()
 
 const routes: RouteConfig[] = [
   {
-    path: '/',
+    path: '/request',
     name: 'main',
     component: MainLayout,
-    // beforeEnter: authService.checkLoggedIn
+    beforeEnter: authService.checkNotLoggedInAtMain
+  },
+  {
+    path: '/administration',
+    name: 'administration',
+    component: AdminLayout,
+    beforeEnter: authService.checkNotLoggedInAtAdmin
   },
   {
     path: '/login',
     component: LoginLayout,
+    name: 'login',
     beforeEnter: authService.checkNotLoggedIn,
     children: [
       { name: 'login', path: '', component: Login }
