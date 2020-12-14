@@ -9,6 +9,11 @@ const authService = new AuthService()
 
 const routes: RouteConfig[] = [
   {
+    path: '/',
+    name: 'dafault',
+    beforeEnter: authService.defaultRedirect
+  },
+  {
     path: '/request',
     name: 'main',
     component: MainLayout,

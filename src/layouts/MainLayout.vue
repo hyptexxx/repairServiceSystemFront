@@ -95,7 +95,7 @@ export default class MainLayout extends Mixins(LoginStore, APIRequests) {
     if (result.status === 200) {
       this.$q.notify({
         type: 'positive',
-        message: 'Изменения внесены',
+        message: 'Заявка отправлена на рассмотрение, с вами свяжется оператор.',
         icon: 'report_problem',
         position: 'bottom'
       })

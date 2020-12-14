@@ -1,5 +1,6 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import LoginStore from 'src/store/LoginStore'
+import { RepairRequest, Status } from 'src/models/models'
 
 @Component
 export default class APIRequests extends Mixins(LoginStore) {
@@ -15,5 +16,28 @@ export default class APIRequests extends Mixins(LoginStore) {
       this.$q.localStorage.remove('isLogged')
       await this.$router.push({ name: 'login' })
     }
+  }
+
+  public async getAllRequests (): Promise<RepairRequest[]> {
+    const result = await this.$axios.get<RepairRequest[]>('/repair_request')
+
+    return result.data
+  }
+
+  public async getAllStatuses (): Promise<Status[]> {
+    const result = await this.$axios.get<Status[]>('/statuses')
+
+    return result.data
+  }
+
+  public async setNewStatus (request: RepairRequest): Promise<RepairRequest> {
+    console.log(request)
+    const formData = new FormData()
+
+    formData.append('repairRequest', JSON.stringify(request))
+
+    const result = await this.$axios.post<RepairRequest>('/repair_request/status', formData)
+
+    return result.data
   }
 }
